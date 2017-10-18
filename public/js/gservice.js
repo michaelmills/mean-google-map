@@ -1,35 +1,28 @@
 angular.module('gservice', [])
-    .factory('gservice', function($rootScope, $http){
-        var googleMapService = {};
-        var locations = [];
-        var selectedLat = 39.50;
-        var selectedLong = -98.35;
+    .factory('gservice', ($rootScope, $http) => {
+        let googleMapService = {};
+        let locations = [];
+        let lastMarker;
+        let currentSelectedMarker;
+        let selectedLat = 39.50;
+        let selectedLong = -98.35;
 
         googleMapService.clickLat = 0;
         googleMapService.clickLong = 0;
 
-        googleMapService.refresh = function(latitude, longitude){
+        googleMapService.refresh = (latitude, longitude, filteredResults) => {
             locations = [];
             selectedLat = latitude;
             selectedLong = longitude;
 
-            $http.get('/users')
-                .then(function(response){
-                    locations = convertToMapPoints(response);
-                    initialize(latitude, longitude);
-                },
-                function(data){
-                    console.log("Error: " + data);
-                });
-
             // private inner function
-            var convertToMapPoints = function(response){
-                var locations = [];
+            let convertToMapPoints = (response) => {
+                let locations = [];
 
-                for(var i=0; i < response.data.length; i++){
-                    var user = response.data[i];
+                for (let i = 0; i < response.data.length; i++) {
+                    let user = response.data[i];
 
-                    var contentString =
+                    let contentString =
                         '<p><b>Username</b>: ' + user.username +
                         '<br><b>Age</b>: ' + user.age +
                         '<br><b>Gender</b>: ' + user.gender +
@@ -52,22 +45,26 @@ angular.module('gservice', [])
                 return locations;
             };
 
-            var initialize = function(latitude, longitude){
-                var myLatLng = {lat: selectedLat, lng: selectedLong};
+            let initialize = (latitude, longitude, filter) => {
+                let myLatLng = {lat: selectedLat, lng: selectedLong};
 
-                if(!map){
-                    var map = new google.maps.Map(document.getElementById('map'), {
-                        zoom: 3,
-                        center: myLatLng
-                    });
+                let map = new google.maps.Map(document.getElementById('map'), {
+                    zoom: 3,
+                    center: myLatLng
+                });
+
+                if(filter){
+                    icon = 'http://maps.google.com/mapfiles/ms/icons/yellow-dot.png';
+                } else {
+                    icon = 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png';
                 }
 
-                locations.forEach(function(n, i){
-                    var marker = new google.maps.Marker({
+                locations.forEach((n, i) => {
+                    let marker = new google.maps.Marker({
                         position: n.latlon,
                         map: map,
                         title: "Big Map",
-                        icon: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+                        icon: icon
                     });
 
                     google.maps.event.addListener(marker, 'click', function(e){
@@ -76,18 +73,19 @@ angular.module('gservice', [])
                     });
                 });
 
-                var initialLocation = new google.maps.LatLng(latitude, longitude);
-                var lastMarker = new google.maps.Marker({
+                let initialLocation = new google.maps.LatLng(latitude, longitude);
+                let marker = new google.maps.Marker({
                     position: initialLocation,
                     animation: google.maps.Animation.BOUNCE,
                     map: map,
                     icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'
                 });
+                lastMarker = marker;
 
                 map.panTo(initialLocation);
 
-                google.maps.event.addListener(map, 'click', function(e){
-                    var marker = new google.maps.Marker({
+                google.maps.event.addListener(map, 'click', (e) => {
+                    let marker = new google.maps.Marker({
                         position: e.latLng,
                         animation: google.maps.Animation.BOUNCE,
                         map: map,
@@ -107,6 +105,19 @@ angular.module('gservice', [])
                 });
             };
 
+            if(filteredResults){
+                locations = convertToMapPoints(filteredResults);
+                initialize(latitude, longitude, true);
+            } else {
+                $http.get('/users')
+                    .then(function(response){
+                            locations = convertToMapPoints(response);
+                            initialize(latitude, longitude, false);
+                        },
+                        function(data){
+                            console.log("Error: " + data);
+                        });
+            }
         };
 
         google.maps.event.addDomListener(window, 'load', googleMapService.refresh(selectedLat, selectedLong));
