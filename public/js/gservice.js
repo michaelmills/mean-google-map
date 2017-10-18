@@ -1,28 +1,28 @@
 angular.module('gservice', [])
-    .factory('gservice', ($rootScope, $http) => {
-        let googleMapService = {};
-        let locations = [];
-        let lastMarker;
-        let currentSelectedMarker;
-        let selectedLat = 39.50;
-        let selectedLong = -98.35;
+    .factory('gservice', function($rootScope, $http) {
+        var googleMapService = {};
+        var locations = [];
+        var lastMarker;
+        var currentSelectedMarker;
+        var selectedLat = 39.50;
+        var selectedLong = -98.35;
 
         googleMapService.clickLat = 0;
         googleMapService.clickLong = 0;
 
-        googleMapService.refresh = (latitude, longitude, filteredResults) => {
+        googleMapService.refresh = function(latitude, longitude, filteredResults) {
             locations = [];
             selectedLat = latitude;
             selectedLong = longitude;
 
             // private inner function
-            let convertToMapPoints = (response) => {
-                let locations = [];
+            var convertToMapPoints = function(response) {
+                var locations = [];
 
-                for (let i = 0; i < response.data.length; i++) {
-                    let user = response.data[i];
+                for (var i = 0; i < response.data.length; i++) {
+                    var user = response.data[i];
 
-                    let contentString =
+                    var contentString =
                         '<p><b>Username</b>: ' + user.username +
                         '<br><b>Age</b>: ' + user.age +
                         '<br><b>Gender</b>: ' + user.gender +
@@ -45,10 +45,10 @@ angular.module('gservice', [])
                 return locations;
             };
 
-            let initialize = (latitude, longitude, filter) => {
-                let myLatLng = {lat: selectedLat, lng: selectedLong};
+            var initialize = function(latitude, longitude, filter) {
+                var myLatLng = {lat: selectedLat, lng: selectedLong};
 
-                let map = new google.maps.Map(document.getElementById('map'), {
+                var map = new google.maps.Map(document.getElementById('map'), {
                     zoom: 3,
                     center: myLatLng
                 });
@@ -59,8 +59,8 @@ angular.module('gservice', [])
                     icon = 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png';
                 }
 
-                locations.forEach((n, i) => {
-                    let marker = new google.maps.Marker({
+                locations.forEach(function(n, i) {
+                    var marker = new google.maps.Marker({
                         position: n.latlon,
                         map: map,
                         title: "Big Map",
@@ -73,8 +73,8 @@ angular.module('gservice', [])
                     });
                 });
 
-                let initialLocation = new google.maps.LatLng(latitude, longitude);
-                let marker = new google.maps.Marker({
+                var initialLocation = new google.maps.LatLng(latitude, longitude);
+                var marker = new google.maps.Marker({
                     position: initialLocation,
                     animation: google.maps.Animation.BOUNCE,
                     map: map,
@@ -84,8 +84,8 @@ angular.module('gservice', [])
 
                 map.panTo(initialLocation);
 
-                google.maps.event.addListener(map, 'click', (e) => {
-                    let marker = new google.maps.Marker({
+                google.maps.event.addListener(map, 'click', function(e) {
+                    var marker = new google.maps.Marker({
                         position: e.latLng,
                         animation: google.maps.Animation.BOUNCE,
                         map: map,
