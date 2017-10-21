@@ -4,9 +4,10 @@
   "license": "MIT",
   "scripts": {
     "ng": "ng",
-    "dev": "concurrently --kill-others \"npm start\" \"npm run server\"",
-    "server": "nodemon ./server/server.js",
-    "start": "ng serve --proxy-config proxy.config.json",
+    "dev": "concurrently --kill-others \"npm run server:build\" \"sleep 3 && npm run server:start\" \"npm start\"",
+    "server:build": "rm -rf dist/server && tsc -w -p ./server",
+    "server:start": "nodemon dist/server/server.js --watch dist/server",
+    "start": "ng serve --no-delete-output-path --proxy-config proxy.config.json",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",

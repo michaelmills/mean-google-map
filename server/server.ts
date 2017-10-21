@@ -1,12 +1,11 @@
-const express         = require('express');
-const mongoose        = require('mongoose');
-const morgan          = require('morgan');
-const bodyParser      = require('body-parser');
+import * as express from "express";
+import * as mongoose from "mongoose";
+import * as morgan from "morgan";
+import * as bodyParser from "body-parser";
+import router from "./routes/api";
 
 const port            = process.env.PORT || 3000;
 const app             = express();
-
-const routes = require('./routes/api');
 
 // body parsers for POST
 app.use(bodyParser.json());
@@ -18,7 +17,7 @@ app.use(morgan('dev')); // logging tool
 
 // app.use('/scripts', express.static(__dirname + '/node_modules'));
 
-app.use('/api', routes); // set up routes
+app.use('/api', router); // set up routes
 
 mongoose.connect("mongodb://localhost/MeanMapApp"); // connect mongodb
 
