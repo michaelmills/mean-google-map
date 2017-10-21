@@ -4,7 +4,7 @@
   "license": "MIT",
   "scripts": {
     "ng": "ng",
-    "dev": "concurrently --kill-others \"npm run server:build\" \"sleep 3 && npm run server:start\" \"npm start\"",
+    "dev": "concurrently --kill-others \"npm run server:build\" \"sleep 5 && npm run server:start\" \"npm start\"",
     "server:build": "rm -rf dist/server && tsc -w -p ./server",
     "server:start": "nodemon dist/server/server.js --watch dist/server",
     "start": "ng serve --no-delete-output-path --proxy-config proxy.config.json",

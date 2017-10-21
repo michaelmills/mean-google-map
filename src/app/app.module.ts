@@ -7,6 +7,7 @@ import { AppComponent } from './app.component';
 import { AddFormComponent } from './forms/addForm.component';
 import { QueryFormComponent } from './forms/queryForm.component';
 import { FormModule } from './forms/form.module';
+import { GoogleMapService } from './services/googleMapService';
 
 const appRoutes: Routes = [
   {
@@ -34,7 +35,6 @@ const appRoutes: Routes = [
     RouterModule.forRoot(appRoutes),
     FormModule
   ],
-  providers: [],
   bootstrap: [ AppComponent ]
 })
 export class AppModule { }
