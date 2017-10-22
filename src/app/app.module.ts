@@ -35,6 +35,7 @@ const appRoutes: Routes = [
     RouterModule.forRoot(appRoutes),
     FormModule
   ],
-  bootstrap: [ AppComponent ]
+  bootstrap: [ AppComponent ],
+  providers: [ GoogleMapService ]
 })
 export class AppModule { }
