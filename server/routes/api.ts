@@ -22,7 +22,7 @@ router.post('/users', (req, res) => {
     if (err){
       res.send(err);
     }
-    console.log("posted user: " + req.body);
+    console.log("posted user: " + JSON.stringify(req.body));
     res.json(req.body);
   });
 });

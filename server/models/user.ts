@@ -1,10 +1,17 @@
 // Pulls Mongoose dependency for creating schemas
 import * as mongoose from "mongoose";
 
-const Schema = mongoose.Schema;
+interface IUser extends mongoose.Document {
+  username?: string;
+  gender?: string;
+  age?: string;
+  favlang?: string;
+  location?: string;
+  htmlverified?: string;
+}
 
 // Creates a user schema
-const UserSchema = new Schema({
+const UserSchema = new mongoose.Schema({
   username: {type: String, required: true},
   gender: {type: String, required: true},
   age: {type: Number, required: true},
@@ -30,5 +37,5 @@ UserSchema.pre('save', (next) => {
 UserSchema.index({location: '2dsphere'});
 
 // Exports the UserSchema for use elsewhere. Sets the MongoDB collection to be used as: "scotch-users"
-const User = mongoose.model('scotch-user', UserSchema);
-export default User;
+const UserModel = mongoose.model<IUser>('scotch-user', UserSchema);
+export default UserModel;
