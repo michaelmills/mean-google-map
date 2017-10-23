@@ -1,8 +1,8 @@
-import * as express from "express";
-import * as mongoose from "mongoose";
-import * as morgan from "morgan";
-import * as bodyParser from "body-parser";
-import router from "./routes/api";
+import * as express from 'express';
+import * as mongoose from 'mongoose';
+import * as morgan from 'morgan';
+import * as bodyParser from 'body-parser';
+import router from './routes/api';
 
 const port            = process.env.PORT || 3000;
 const app             = express();
@@ -19,8 +19,8 @@ app.use(morgan('dev')); // logging tool
 
 app.use('/api', router); // set up routes
 
-mongoose.connect("mongodb://localhost/MeanMapApp"); // connect mongodb
+mongoose.connect('mongodb://localhost/MeanMapApp'); // connect mongodb
 
-//Listen
+// Listen
 app.listen(port);
 console.log('App listening on port ' + port);

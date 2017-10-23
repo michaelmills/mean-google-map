@@ -1,5 +1,5 @@
 // Pulls Mongoose dependency for creating schemas
-import * as mongoose from "mongoose";
+import * as mongoose from 'mongoose';
 
 interface IUser extends mongoose.Document {
   username?: string;

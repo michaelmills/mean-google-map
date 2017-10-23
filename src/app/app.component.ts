@@ -11,10 +11,5 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.googleMapService.drawMap(document.getElementById('map'));
-    // this.googleMapService.pinPosition(document.getElementById('map'), null, null);
-    this.googleMapService.pinCurrentPosition(document.getElementById('map'));
-    // this.googleMapService.pinCurrentPosition(document.getElementById('map')).subscribe(position => {
-    //   this.googleMapService.pinPosition(document.getElementById('map'), position.coords.longitude, position.coords.latitude);
-    // });
   }
 }
