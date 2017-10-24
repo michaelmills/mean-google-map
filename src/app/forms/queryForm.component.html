@@ -10,60 +10,60 @@
   <div class="panel-body">
 
     <!-- Creates Form -->
-    <form name ="queryForm">
+    <form [formGroup]="queryUserForm" name ="queryForm" (ngSubmit)="queryUsers()" novalidate>
 
       <!-- Text Boxes and Other User Inputs. Note ng-model binds the values to Angular $scope -->
       <div class="form-group">
         <label for="latitude">Your Latitude</label>
-        <input type="text" class="form-control" id="latitude" placeholder="39.5" ng-model="formData.latitude" readonly>
+        <input type="text" class="form-control" formControlName="latitude" id="latitude" placeholder="39.5" readonly>
       </div>
       <div class="form-group">
         <label for="longitude">Your Longitude</label>
-        <input type="text" class="form-control" id="longitude" placeholder="-98.35" ng-model="formData.longitude" readonly>
+        <input type="text" class="form-control" formControlName="longitude" id="longitude" placeholder="-98.35" readonly>
       </div>
       <div class="form-group">
         <label for="distance">Max. Distance (miles)</label>
-        <input type="text" class="form-control" id="distance" placeholder="500" ng-model="formData.distance">
+        <input type="text" class="form-control" id="distance" placeholder="500" formControlName="distance">
       </div>
 
       <!-- Note ng-true-value which translates check values into explicit gender strings -->
       <label>Gender</label>
       <div class="form-group">
         <label class="checkbox-inline">
-          <input type="checkbox" name="optionsRadios" id="checkmale" value="Male" ng-model="formData.male" ng-true-value = "'Male'">
+          <input type="checkbox" name="optionsRadios" id="checkmale" formControlName="male">
           Male
         </label>
         <label class="checkbox-inline">
-          <input type="checkbox" name="optionsRadios" id="checkfemale" value="Female" ng-model="formData.female" ng-true-value="'Female'">
+          <input type="checkbox" name="optionsRadios" id="checkfemale" formControlName="female">
           Female
         </label>
         <label class="checkbox-inline">
-          <input type="checkbox" name="optionsRadios" id="checkother" value="What's it to ya?" ng-model="formData.other" ng-true-value="'What\'s it to ya?'">
+          <input type="checkbox" name="optionsRadios" id="checkother" formControlName="other">
           What's it to ya?
         </label>
       </div>
       <div class="form-group">
         <label for="minage">Min. Age</label>
-        <input type="number" class="form-control" id="minage" placeholder="5" ng-model="formData.minage">
+        <input type="number" class="form-control" id="minage" placeholder="5" formControlName="minAge">
       </div>
       <div class="form-group">
         <label for="maxage">Max Age</label>
-        <input type="number" class="form-control" id="maxage" placeholder="80" ng-model="formData.maxage">
+        <input type="number" class="form-control" id="maxage" placeholder="80" formControlName="maxAge">
       </div>
       <div class="form-group">
         <label for="favlang">Favorite Language</label>
-        <input type="text" class="form-control" id="favlang" placeholder="Fortran" ng-model="formData.favlang">
+        <input type="text" class="form-control" id="favlang" placeholder="Fortran" formControlName="favlang">
       </div>
       <div class="form-group">
         <div class="checkbox">
           <label>
-            <input type="checkbox" name="verified" id="radiomale" value="True" ng-model="formData.verified"> <strong>Include Only HTML5 Verified Locations?</strong>
+            <input type="checkbox" name="verified" id="radiomale" value="True" formControlName="reqVerified"> <strong>Include Only HTML5 Verified Locations?</strong>
           </label>
         </div>
       </div>
 
       <!-- Query button. Note that its tied to queryUsers() function from queryCtrl.  -->
-      <button type="submit" class="btn btn-danger btn-block" ng-click="queryUsers()">Search</button>
+      <button type="submit" class="btn btn-danger btn-block">Search</button>
     </form>
   </div>
 

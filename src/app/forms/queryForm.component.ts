@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { GoogleMapService } from '../services/googleMapService';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { Http, Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/operator/catch';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/observable/throw';
 
 @Component({
   selector: 'app-form-root',
@@ -20,19 +23,19 @@ export class QueryFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.queryUserForm = this.formBuilder.group({
-      latitude: [this.defaultLatitude, [Validators.required]],
-      longitude: [this.defaultLongitude, [Validators.required]],
-      distance: ['', [Validators.required]],
-      male: ['', [Validators.required]],
-      female: ['', [Validators.required]],
-      other: ['', [Validators.required]],
-      minAge: ['', [Validators.required]],
-      maxAge: ['', [Validators.required]],
-      favlang: ['', [Validators.required]],
-      reqVerified: [false, [Validators.required]]
+      latitude: this.defaultLatitude,
+      longitude: this.defaultLongitude,
+      distance: '',
+      male: false,
+      female: false,
+      other: false,
+      minAge: '',
+      maxAge: '',
+      favlang: '',
+      reqVerified: false
     });
 
-    this.googleMapService.pinCurrentPosition(document.getElementById('map'));
+    this.googleMapService.pinCurrentPosition();
 
     // subscribing to Observable for clicked coordinates
     this.googleMapService.getClickedCoords().subscribe((x) => {
@@ -54,35 +57,48 @@ export class QueryFormComponent implements OnInit {
   }
 
   queryUsers() {
-    console.log(`Sending POST request to '/api/query': ${JSON.stringify(this.queryUserForm.value)}`);
-
     const queryData = {
       longitude: parseFloat(this.queryUserForm.value.longitude),
       latitude: parseFloat(this.queryUserForm.value.latitude),
       distance: parseFloat(this.queryUserForm.value.distance),
-      male: this.queryUserForm.value.male,
-      female: this.queryUserForm.value.female,
-      other: this.queryUserForm.value.other,
-      minAge: this.queryUserForm.value.minage,
-      maxAge: this.queryUserForm.value.maxage,
+      male: this.queryUserForm.value.male ? 'Male' : '',
+      female: this.queryUserForm.value.female ? 'Female' : '',
+      other: this.queryUserForm.value.other ? 'What\'s it to ya?' : '',
+      minAge: this.queryUserForm.value.minAge,
+      maxAge: this.queryUserForm.value.maxAge,
       favlang: this.queryUserForm.value.favlang,
-      reqVerified: this.queryUserForm.value.verified
+      reqVerified: this.queryUserForm.value.reqVerified
     };
+
+    console.log(`Sending POST request to '/api/query': ${JSON.stringify(queryData)}`);
 
     // POST request to query for users
     this.http.post('/api/query', queryData)
       .map((res: Response) => {
+        console.log(`Received '/api/query' response: ${JSON.stringify(res.json())}`);
+
+        for (const user of res.json()) {
+          this.googleMapService.pinSavedPosition(user, true);
+        }
+
         this.reset();
       })
       .catch((e: any) => {
-        console.log(e.status);
-        return Observable.throw({'Errors': e.json()});
+        return Observable.throw(e || 'backend server error');
       })
       .subscribe();
   }
 
   private reset() {
-    this.queryUserForm.reset();
+    const currentLat = this.queryUserForm.value.latitude;
+    const currentLng = this.queryUserForm.value.longitude;
+    const currentReqVerified = this.queryUserForm.value.reqVerified;
+
+    this.queryUserForm.reset({
+      latitude: currentLat,
+      longitude: currentLng,
+      reqVerified: currentReqVerified
+    });
   }
 
 }

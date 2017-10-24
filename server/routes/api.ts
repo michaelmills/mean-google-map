@@ -5,6 +5,8 @@ const router = express.Router();
 
 // Opens router Routes
 router.get('/users', (req, res) => {
+  console.log(`Received GET '/users' request: ${JSON.stringify(req.body)}`);
+
   const query = User.find({});
   query.exec((err, users) => {
     if (err) {
@@ -32,6 +34,8 @@ router.post('/users', (req, res) => {
 });
 
 router.post('/query', (req, res) => {
+  console.log(`Received POST '/query' request: ${JSON.stringify(req.body)}`);
+
   // Grab all of the query parameters from the body.
   const lat             = req.body.latitude;
   const long            = req.body.longitude;

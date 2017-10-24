@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Http, Response } from '@angular/http';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
+import 'rxjs/add/observable/throw';
 import { Observable } from 'rxjs/Observable';
 import { GoogleMapService } from '../services/googleMapService';
 
@@ -38,7 +39,23 @@ export class AddFormComponent implements OnInit {
     });
 
     // pin user's current position on google map
-    this.googleMapService.pinCurrentPosition(document.getElementById('map'));
+    this.googleMapService.pinCurrentPosition();
+
+    // POST request to query for users
+    this.http.get('/api/users')
+      .map((res: Response) => {
+        console.log(`Received '/api/users' response: ${JSON.stringify(res.json())}`);
+
+        for (const user of res.json()) {
+          this.googleMapService.pinSavedPosition(user, false);
+        }
+
+        this.reset();
+      })
+      .catch((e: any) => {
+        return Observable.throw(e || 'backend server error');
+      })
+      .subscribe();
 
     // subscribing to Observable for clicked coordinates
     this.googleMapService.getClickedCoords().subscribe((x) => {
@@ -63,8 +80,6 @@ export class AddFormComponent implements OnInit {
    * Retrieves form data and sends POST request to add user to db
    */
   createUser() {
-    console.log(`Sending POST request to '/api/users': ${JSON.stringify(this.addUserForm.value)}`);
-
     const userData = {
       username: this.addUserForm.value.username,
       gender: this.addUserForm.value.gender,
@@ -73,6 +88,8 @@ export class AddFormComponent implements OnInit {
       location: [this.addUserForm.value.longitude, this.addUserForm.value.latitude],
       htmlverified: this.addUserForm.value.htmlverified
     };
+
+    console.log(`Sending POST request to '/api/users': ${JSON.stringify(userData)}`);
 
     // POST request to save user and reset the form's content
     this.http.post('/api/users', userData)
@@ -83,8 +100,7 @@ export class AddFormComponent implements OnInit {
         this.reset();
       })
       .catch((e: any) => {
-        console.log(e.status);
-        return Observable.throw({'Errors': e.json()});
+        return Observable.throw(e || 'backend server error');
       })
       .subscribe();
   }
@@ -93,10 +109,14 @@ export class AddFormComponent implements OnInit {
    * Resets the form's content
    */
   private reset() {
+    const currentLat = this.addUserForm.value.latitude;
+    const currentLng = this.addUserForm.value.longitude;
+    const currentHtmlverified = this.addUserForm.value.htmlverified;
+
     this.addUserForm.reset({
-      latitude: this.defaultLatitude,
-      longitude: this.defaultLongitude,
-      htmlverified: this.notVerified
+      latitude: currentLat,
+      longitude: currentLng,
+      htmlverified: currentHtmlverified
     });
   }
 }
