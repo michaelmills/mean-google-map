@@ -9,15 +9,18 @@ export class GoogleMapService {
   initialCoords: [number, number] = [51.508, -0.120];
 
   private map: any;
-  private lastMarker: any;
   private infoWindow: any;
-  private clickedCoords: any;
-  private autoCoords: any;
+  private lastMarker: any;
+  private markers: any[];
+
+  private clickedCoords: Subject<any>;
+  private autoCoords: Subject<any>;
 
   constructor() {
     this.clickedCoords = new Subject<any>();
     this.autoCoords = new Subject<any>();
     this.infoWindow = new google.maps.InfoWindow();
+    this.markers = [];
   }
 
   /**
@@ -43,6 +46,15 @@ export class GoogleMapService {
 
     this.map = new google.maps.Map(htmlElement, mapProp);
     this.addMapListener();
+  }
+
+  /**
+   * Clears the map of all markers
+   */
+  clearMap() {
+    for (const marker of this.markers) {
+      marker.setMap(null);
+    }
   }
 
   /**
@@ -115,8 +127,9 @@ export class GoogleMapService {
     });
 
     this.addPinListener(marker, contentString);
+    this.markers.push(marker);
 
-    console.log(`Pinned position[lat, lng]: [${marker.position.lat}, ${marker.position.lng}]`);
+    console.log(`Pinned position[lat, lng]: [${marker.position.lat()}, ${marker.position.lng()}]`);
   }
 
   /**

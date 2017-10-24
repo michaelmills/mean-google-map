@@ -38,7 +38,8 @@ export class AddFormComponent implements OnInit {
       htmlverified: [this.notVerified, [Validators.required]]
     });
 
-    // pin user's current position on google map
+    // clear map and pin user's current position on google map
+    this.googleMapService.clearMap();
     this.googleMapService.pinCurrentPosition();
 
     // POST request to query for users

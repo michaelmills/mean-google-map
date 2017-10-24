@@ -35,6 +35,8 @@ export class QueryFormComponent implements OnInit {
       reqVerified: false
     });
 
+    // clear map and pin user's current position on google map
+    this.googleMapService.clearMap();
     this.googleMapService.pinCurrentPosition();
 
     // subscribing to Observable for clicked coordinates
@@ -76,6 +78,8 @@ export class QueryFormComponent implements OnInit {
     this.http.post('/api/query', queryData)
       .map((res: Response) => {
         console.log(`Received '/api/query' response: ${JSON.stringify(res.json())}`);
+
+        this.googleMapService.clearMap();
 
         for (const user of res.json()) {
           this.googleMapService.pinSavedPosition(user, true);
