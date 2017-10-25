@@ -55,10 +55,10 @@ This will run the Angular server (client-side) and Express server (server-side) 
 The Angular server is located at `http://localhost:4200` and the Express server at `http://localhost:3000`. There's no need to navigate to the Express server. Calls made to port 4200 intended for the server-side are redirected to port 3000.
 
 
-## Join Team Screenshot
+### Join Team Screenshot
 
-(https://raw.githubusercontent.com/michaelmills/mean-google-map/master/src/assets/join-team.png)
+![Join Team](https://raw.githubusercontent.com/michaelmills/mean-google-map/master/src/assets/join-team.png)
 
-## Find Team Members Screenshot
+### Find Team Members Screenshot
 
-(https://raw.githubusercontent.com/michaelmills/mean-google-map/master/src/assets/find-team.png)
+![Find Team Members](https://raw.githubusercontent.com/michaelmills/mean-google-map/master/src/assets/find-team.png)
