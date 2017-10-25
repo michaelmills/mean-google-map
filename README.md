@@ -57,8 +57,8 @@ The Angular server is located at `http://localhost:4200` and the Express server 
 
 ## Join Team Screenshot
 
-(https://github.com/michaelmills/mean-google-map/tree/master/src/assets/join-team.png)
+(https://raw.githubusercontent.com/michaelmills/mean-google-map/master/src/assets/join-team.png)
 
 ## Find Team Members Screenshot
 
-(https://github.com/michaelmills/mean-google-map/tree/master/src/assets/find-team.png)
+(https://raw.githubusercontent.com/michaelmills/mean-google-map/master/src/assets/find-team.png)
