@@ -43,8 +43,7 @@ export class QueryFormComponent implements OnInit {
     this.googleMapService.getClickedCoords().subscribe((x) => {
       this.queryUserForm.patchValue({
         latitude: parseFloat(x[0]).toFixed(3),
-        longitude: parseFloat(x[1]).toFixed(3),
-        reqVerified: false
+        longitude: parseFloat(x[1]).toFixed(3)
       });
     });
 
@@ -52,8 +51,7 @@ export class QueryFormComponent implements OnInit {
     this.googleMapService.getAutoCoords().subscribe((x) => {
       this.queryUserForm.patchValue({
         latitude: parseFloat(x[0]).toFixed(3),
-        longitude: parseFloat(x[1]).toFixed(3),
-        reqVerified: true
+        longitude: parseFloat(x[1]).toFixed(3)
       });
     });
   }
@@ -96,12 +94,10 @@ export class QueryFormComponent implements OnInit {
   private reset() {
     const currentLat = this.queryUserForm.value.latitude;
     const currentLng = this.queryUserForm.value.longitude;
-    const currentReqVerified = this.queryUserForm.value.reqVerified;
 
     this.queryUserForm.reset({
       latitude: currentLat,
-      longitude: currentLng,
-      reqVerified: currentReqVerified
+      longitude: currentLng
     });
   }
 
