@@ -17,21 +17,20 @@ This is a conversion of the ScotchIO project from AngularJS(v1) to Angular(v2+).
 
 ## Getting Started
 
-### Prerequisites
-
-I recommend using Homebrew if you don't have a package manager. It simplifies the process of installing/uninstalling packages. Learn more here [Homebrew](https://brew.sh/)
+**Install Homebrew** 
+I recommend using this package manager. It simplifies the process of installing/uninstalling packages. Learn more here [Homebrew](https://brew.sh/)
 ```
 ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 ```
 
 
-Install NodeJS
+**Install NodeJS**
 ```
 brew install node
 ```
 
 
-Install MongoDB
+**Install MongoDB**
 ```
 brew install mongodb
 mkdir -p /data/db   // this is where MongoDB data files are stored
@@ -39,7 +38,7 @@ sudo chown -R `id -un` /data/db
 ```
 
 
-Run MongoDB before running the application
+**Run MongoDB before running the application**
 ```
 mongod
 ```
