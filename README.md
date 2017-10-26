@@ -45,7 +45,7 @@ mongod
 
 ## Development server
 
-Run `ng run dev` for a dev server. Navigate to `http://localhost:4200/`. 
+Run `npm run dev` for a dev server. Navigate to `http://localhost:4200/`. 
 
 This will run the Angular server (client-side) and Express server (server-side) of the application. Any changes made to the files will reload their respective servers.
 
