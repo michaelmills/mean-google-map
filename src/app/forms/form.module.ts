@@ -1,10 +1,11 @@
-import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { QueryFormComponent } from './queryForm.component';
-import { AddFormComponent } from './addForm.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
+import { BrowserModule } from '@angular/platform-browser';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { UserService } from '../services/userService';
+import { AddFormComponent } from './addForm.component';
+import { QueryFormComponent } from './queryForm.component';
 
 @NgModule({
   imports: [
@@ -18,7 +19,7 @@ import { HttpModule } from '@angular/http';
     QueryFormComponent,
     AddFormComponent
   ],
-  providers: [],
+  providers: [ UserService ],
   bootstrap: [
     QueryFormComponent,
     AddFormComponent
