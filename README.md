@@ -43,6 +43,11 @@ sudo chown -R `id -un` /data/db
 mongod
 ```
 
+## Background Info
+
+The Angular server is located at `http://localhost:4200` and the Express server at `http://localhost:3000`. There's no need to navigate to the Express server. Calls made to port 4200 intended for the server-side are redirected to port 3000.
+
+
 ## Development server
 
 Run `npm run dev` for a dev server. Navigate to `http://localhost:4200/`. 
@@ -50,10 +55,12 @@ Run `npm run dev` for a dev server. Navigate to `http://localhost:4200/`.
 This will run the Angular server (client-side) and Express server (server-side) of the application. Any changes made to the files will reload their respective servers.
 
 
-## Background Info
+## Running Tests
+Run `npm test`.
 
-The Angular server is located at `http://localhost:4200` and the Express server at `http://localhost:3000`. There's no need to navigate to the Express server. Calls made to port 4200 intended for the server-side are redirected to port 3000.
+A Chrome browser for `http://localhost:9876` should pop up. Tests are run using Jasmine, Angular testing utilities, and Karma.
 
+Currently working on unit testing... 
 
 ### Join Team Screenshot
 
