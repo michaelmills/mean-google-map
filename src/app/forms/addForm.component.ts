@@ -23,8 +23,8 @@ export class AddFormComponent implements OnInit {
 
   constructor(private http: Http, private formBuilder: FormBuilder,
               private googleMapService: GoogleMapService, private userService: UserService) {
-    this.defaultLatitude = this.googleMapService.initialCoords[0];
-    this.defaultLongitude = this.googleMapService.initialCoords[1];
+    this.defaultLatitude = this.googleMapService.defaultLatitude;
+    this.defaultLongitude = this.googleMapService.defaultLongitude;
   }
 
   /**
@@ -45,26 +45,12 @@ export class AddFormComponent implements OnInit {
     this.googleMapService.clearMap();
     this.googleMapService.pinCurrentPosition();
 
-    // POST request to query for users
+    // query for users
     this.userService.getUsers().subscribe(users => {
       for (const user of users) {
         this.googleMapService.pinSavedPosition(user, false);
       }
     });
-    // this.http.get('/api/users')
-    //   .map((res: Response) => {
-    //     console.log(`Received '/api/users' response: ${JSON.stringify(res.json())}`);
-    //
-    //     for (const user of res.json()) {
-    //       this.googleMapService.pinSavedPosition(user, false);
-    //     }
-    //
-    //     this.reset();
-    //   })
-    //   .catch((e: any) => {
-    //     return Observable.throw(e || 'backend server error');
-    //   })
-    //   .subscribe();
 
     // subscribing to Observable for clicked coordinates
     this.googleMapService.getClickedCoords().subscribe((x) => {

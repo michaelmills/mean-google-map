@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
 
 declare let google: any;
 
 @Injectable()
 export class GoogleMapService {
-  initialCoords: [number, number] = [51.508, -0.120];
+  private initialCoords: [number, number] = [51.508, -0.120];
 
   private map: any;
   private infoWindow: any;
@@ -167,4 +167,11 @@ export class GoogleMapService {
     return this.autoCoords.asObservable();
   }
 
+  get defaultLatitude(): number {
+    return this.initialCoords[0];
+  }
+
+  get defaultLongitude(): number {
+    return this.initialCoords[1];
+  }
 }

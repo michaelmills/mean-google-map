@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { GoogleMapService } from '../services/googleMapService';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Http, Response } from '@angular/http';
-import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
-import 'rxjs/add/observable/throw';
+import { Observable } from 'rxjs/Observable';
+import { GoogleMapService } from '../services/googleMapService';
 
 @Component({
   selector: 'app-form-root',
@@ -17,8 +17,8 @@ export class QueryFormComponent implements OnInit {
   private defaultLongitude: number;
 
   constructor(private http: Http, private formBuilder: FormBuilder, private googleMapService: GoogleMapService) {
-    this.defaultLatitude = this.googleMapService.initialCoords[0];
-    this.defaultLongitude = this.googleMapService.initialCoords[1];
+    this.defaultLatitude = this.googleMapService.defaultLatitude;
+    this.defaultLongitude = this.googleMapService.defaultLongitude;
   }
 
   ngOnInit(): void {
