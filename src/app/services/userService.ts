@@ -7,13 +7,26 @@ import { Observable } from 'rxjs/Observable';
 
 @Injectable()
 export class UserService {
+  private USERS_URL = '/api/users';
 
   constructor(private http: Http) {}
 
   getUsers(): Observable<any> {
-    return this.http.get('/api/users')
+    return this.http.get(this.USERS_URL)
       .map((res: Response) => {
-        console.log(`Received '/api/users' response: ${JSON.stringify(res.json())}`);
+        console.log(`Received GET '/api/users' response: ${JSON.stringify(res.json())}`);
+
+        return res.json();
+      })
+      .catch((e: any) => {
+        return Observable.throw(e || 'backend server error');
+      });
+  }
+
+  postUser(userData: any): Observable<any> {
+    return this.http.post(this.USERS_URL, userData)
+      .map((res: Response) => {
+        console.log(`Received POST '/api/users' response: ${JSON.stringify(res.json())}`);
 
         return res.json();
       })

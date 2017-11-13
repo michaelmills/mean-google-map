@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Http, Response } from '@angular/http';
+import { Http } from '@angular/http';
 import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
-import { Observable } from 'rxjs/Observable';
 import { GoogleMapService } from '../services/googleMapService';
 import { UserService } from '../services/userService';
 
@@ -87,17 +86,12 @@ export class AddFormComponent implements OnInit {
     console.log(`Sending POST request to '/api/users': ${JSON.stringify(userData)}`);
 
     // POST request to save user and reset the form's content
-    this.http.post('/api/users', userData)
-      .map((res: Response) => {
-        this.defaultLatitude = this.addUserForm.value.latitude;
-        this.defaultLongitude = this.addUserForm.value.longitude;
+    this.userService.postUser(userData).subscribe(response => {
+      this.defaultLatitude = this.addUserForm.value.latitude;
+      this.defaultLongitude = this.addUserForm.value.longitude;
 
-        this.reset();
-      })
-      .catch((e: any) => {
-        return Observable.throw(e || 'backend server error');
-      })
-      .subscribe();
+      this.reset();
+    });
   }
 
   /**
