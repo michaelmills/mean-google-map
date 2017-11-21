@@ -7,16 +7,18 @@ import { AddFormComponent } from '../../forms/addForm.component';
 import { FormModule } from '../../forms/form.module';
 import { GoogleMapService } from '../../services/googleMapService';
 import { UserService } from '../../services/userService';
+import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
 
 class GoogleMapServiceStub {
   clearMap() {}
   pinCurrentPosition() {}
+
   getClickedCoords(): Observable<any> {
-    return Observable.of('');
+    return new EmptyObservable();
   }
 
   getAutoCoords(): Observable<any> {
-    return Observable.of('');
+    return new EmptyObservable();
   }
 
   get defaultLongitude(): number {
@@ -30,6 +32,10 @@ class GoogleMapServiceStub {
 
 class UserServiceStub {
   getUsers(): Observable<any> {
+    return Observable.of('');
+  }
+
+  postUser(userData: any): Observable<any> {
     return Observable.of('');
   }
 }
@@ -54,6 +60,9 @@ describe('AddFormComponent', () => {
         fixture = TestBed.createComponent(AddFormComponent);
         comp = fixture.componentInstance; // AddFormComponent test instance
 
+        comp.ngOnInit();
+        fixture.detectChanges();
+
         googleMapService = TestBed.get(GoogleMapService);
         userService = TestBed.get(UserService);
       });
@@ -70,13 +79,10 @@ describe('AddFormComponent', () => {
   }));
 
   it('form invalid when empty', fakeAsync(() => {
-    fixture.detectChanges();
     expect(comp.addUserForm.valid).toBeFalsy();
   }));
 
   it('username field validity', () => {
-    fixture.detectChanges();
-
     const username = comp.addUserForm.controls['username'];
     expect(username.valid).toBeFalsy();
 
@@ -91,8 +97,6 @@ describe('AddFormComponent', () => {
   });
 
   it('gender field validity', () => {
-    fixture.detectChanges();
-
     const gender = comp.addUserForm.controls['gender'];
     expect(gender.valid).toBeFalsy();
 
@@ -107,8 +111,6 @@ describe('AddFormComponent', () => {
   });
 
   it('age field validity', () => {
-    fixture.detectChanges();
-
     const age = comp.addUserForm.controls['age'];
     expect(age.valid).toBeFalsy();
 
@@ -117,14 +119,12 @@ describe('AddFormComponent', () => {
     expect(errors['required']).toBeTruthy();
 
     // set age
-    age.setValue('test_gender');
+    age.setValue(55);
     errors = age.errors || {};
     expect(errors['required']).toBeFalsy();
   });
 
   it('favlang field validity', () => {
-    fixture.detectChanges();
-
     const favlang = comp.addUserForm.controls['favlang'];
     expect(favlang.valid).toBeFalsy();
 
@@ -133,14 +133,12 @@ describe('AddFormComponent', () => {
     expect(errors['required']).toBeTruthy();
 
     // set favlang
-    favlang.setValue('test_gender');
+    favlang.setValue('favlang');
     errors = favlang.errors || {};
     expect(errors['required']).toBeFalsy();
   });
 
   it('longitude field validity', () => {
-    fixture.detectChanges();
-
     const longitude = comp.addUserForm.controls['longitude'];
     expect(longitude.valid).toBeTruthy();
 
@@ -150,13 +148,32 @@ describe('AddFormComponent', () => {
   });
 
   it('latitude field validity', () => {
-    fixture.detectChanges();
-
     const latitude = comp.addUserForm.controls['latitude'];
     expect(latitude.valid).toBeTruthy();
 
     // latitude field set in constructor
     const errors = latitude.errors || {};
     expect(errors['required']).toBeFalsy();
+  });
+
+  xit('save user throws error on invalid form', () => {
+    spyOn(userService, 'postUser');
+    spyOn(userService, 'getUsers').and.returnValue(new EmptyObservable());
+
+    expect(comp.addUserForm.valid).toBeFalsy();
+
+    comp.addUserForm.controls['username'].setValue('test_username');
+    comp.addUserForm.controls['gender'].setValue('test_gender');
+    comp.addUserForm.controls['age'].setValue(55);
+    comp.addUserForm.controls['favlang'].setValue('test_favlang');
+
+    expect(comp.addUserForm.valid).toBeTruthy();
+
+    comp.saveUser();
+
+    expect(userService.postUser).toHaveBeenCalled();
+
+    expect(comp.addUserForm.valid).toBeFalsy();
+
   });
 });

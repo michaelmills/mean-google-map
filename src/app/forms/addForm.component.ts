@@ -73,7 +73,12 @@ export class AddFormComponent implements OnInit {
   /**
    * Retrieves form data and sends POST request to add user to db
    */
-  createUser() {
+  saveUser() {
+    if (!this.addUserForm.valid) {
+      console.log('Error: Form not valid');
+      return;
+    }
+
     const userData = {
       username: this.addUserForm.value.username,
       gender: this.addUserForm.value.gender,

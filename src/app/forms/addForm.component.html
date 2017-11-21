@@ -6,7 +6,7 @@
   <!-- Panel Body -->
   <div class="panel-body">
     <!-- Creates Form (novalidate disables HTML validation, Angular will control) -->
-    <form [formGroup]="addUserForm" name="addForm" (ngSubmit)="createUser()" novalidate>
+    <form [formGroup]="addUserForm" name="addForm" (ngSubmit)="saveUser()" novalidate>
       <!-- Text Boxes and Other User Inputs. Note ng-model binds the values to Angular $scope -->
       <div class="form-group">
         <label for="username">Username <span class="badge">All fields required</span></label>
@@ -51,7 +51,7 @@
         <label for="verified">HTML5 Verified Location?</label>
         <input type="text" class="form-control" id="verified" placeholder= "Nope (Thanks for spamming my map...)" formControlName="htmlverified" readonly>
       </div>
-      <!-- Submit button. Note that its tied to createUser() function from addCtrl. Also note ng-disabled logic which prevents early submits.  -->
+      <!-- Submit button. Note that its tied to saveUser() function from addCtrl. Also note ng-disabled logic which prevents early submits.  -->
       <button type="submit" class="btn btn-danger btn-block" [disabled]="!addUserForm.valid">Submit</button>
     </form>
   </div>
