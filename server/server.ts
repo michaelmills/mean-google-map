@@ -19,7 +19,9 @@ app.use(morgan('dev')); // logging tool
 
 app.use('/api', router); // set up routes
 
-mongoose.connect('mongodb://localhost/MeanMapApp'); // connect mongodb
+mongoose.connect('mongodb://localhost/MeanMapApp', {
+  useMongoClient: true
+}); // connect mongodb
 
 // Listen
 app.listen(port);

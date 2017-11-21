@@ -17,13 +17,8 @@ export class AddFormComponent implements OnInit {
   private verified = 'Yep (Thanks for giving us real data!)';
   private notVerified = 'Nope (Thanks for spamming my map...)';
 
-  private defaultLatitude: number;
-  private defaultLongitude: number;
-
-  constructor(private http: Http, private formBuilder: FormBuilder,
+  constructor(private formBuilder: FormBuilder,
               private googleMapService: GoogleMapService, private userService: UserService) {
-    this.defaultLatitude = this.googleMapService.defaultLatitude;
-    this.defaultLongitude = this.googleMapService.defaultLongitude;
   }
 
   /**
@@ -35,8 +30,8 @@ export class AddFormComponent implements OnInit {
       gender: ['', [Validators.required]],
       age: ['', [Validators.required]],
       favlang: ['', [Validators.required]],
-      longitude: [this.defaultLongitude, [Validators.required]],
-      latitude: [this.defaultLatitude, [Validators.required]],
+      longitude: [this.googleMapService.defaultLatitude, [Validators.required]],
+      latitude: [this.googleMapService.defaultLongitude, [Validators.required]],
       htmlverified: [this.notVerified, [Validators.required]]
     });
 
@@ -92,9 +87,6 @@ export class AddFormComponent implements OnInit {
 
     // POST request to save user and reset the form's content
     this.userService.postUser(userData).subscribe(response => {
-      this.defaultLatitude = this.addUserForm.value.latitude;
-      this.defaultLongitude = this.addUserForm.value.longitude;
-
       this.reset();
     });
   }

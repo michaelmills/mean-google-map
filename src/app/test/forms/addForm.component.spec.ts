@@ -64,7 +64,7 @@ describe('AddFormComponent', () => {
         fixture.detectChanges();
 
         googleMapService = TestBed.get(GoogleMapService);
-        userService = TestBed.get(UserService);
+        userService = fixture.debugElement.injector.get(UserService);
       });
   }));
 
@@ -156,8 +156,8 @@ describe('AddFormComponent', () => {
     expect(errors['required']).toBeFalsy();
   });
 
-  xit('save user throws error on invalid form', () => {
-    spyOn(userService, 'postUser');
+  it('save user throws error on invalid form', () => {
+    spyOn(userService, 'postUser').and.returnValue(Observable.of(''));
     spyOn(userService, 'getUsers').and.returnValue(new EmptyObservable());
 
     expect(comp.addUserForm.valid).toBeFalsy();
@@ -171,9 +171,15 @@ describe('AddFormComponent', () => {
 
     comp.saveUser();
 
+    // form is reset
     expect(userService.postUser).toHaveBeenCalled();
-
+    expect(comp.addUserForm.controls['username'].valid).toBeFalsy();
+    expect(comp.addUserForm.controls['gender'].valid).toBeFalsy();
+    expect(comp.addUserForm.controls['age'].valid).toBeFalsy();
+    expect(comp.addUserForm.controls['favlang'].valid).toBeFalsy();
+    expect(comp.addUserForm.controls['latitude'].value).toEqual(0);
+    expect(comp.addUserForm.controls['longitude'].value).toEqual(0);
+    expect(comp.addUserForm.controls['htmlverified'].value).toEqual('Nope (Thanks for spamming my map...)');
     expect(comp.addUserForm.valid).toBeFalsy();
-
   });
 });
