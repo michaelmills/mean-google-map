@@ -7,6 +7,7 @@ import 'rxjs/add/operator/map';
 import { Observable } from 'rxjs/Observable';
 import { GoogleMapService } from '../services/googleMapService';
 import { UserService } from '../services/userService';
+import { QueryUserData } from '../common/types';
 
 @Component({
   selector: 'app-form-root',
@@ -59,9 +60,9 @@ export class QueryFormComponent implements OnInit {
    * Queries users based on criteria
    */
   queryUsers() {
-    const queryData = {
-      longitude: parseFloat(this.queryUserForm.value.longitude),
+    const queryUserData: QueryUserData = {
       latitude: parseFloat(this.queryUserForm.value.latitude),
+      longitude: parseFloat(this.queryUserForm.value.longitude),
       distance: parseFloat(this.queryUserForm.value.distance),
       male: this.queryUserForm.value.male ? 'Male' : '',
       female: this.queryUserForm.value.female ? 'Female' : '',
@@ -72,10 +73,10 @@ export class QueryFormComponent implements OnInit {
       reqVerified: this.queryUserForm.value.reqVerified
     };
 
-    console.log(`Sending POST request to '/api/query': ${JSON.stringify(queryData)}`);
+    console.log(`Sending POST request to '/api/query': ${JSON.stringify(queryUserData)}`);
 
     // POST request to query for users
-    this.userService.queryUsers(queryData).subscribe(users => {
+    this.userService.queryUsers(queryUserData).subscribe(users => {
       this.googleMapService.clearMap();
 
       this.queryCount = users.size;

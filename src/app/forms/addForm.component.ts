@@ -6,6 +6,7 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 import { GoogleMapService } from '../services/googleMapService';
 import { UserService } from '../services/userService';
+import { UserData } from '../common/types';
 
 @Component({
   selector: 'app-form-root',
@@ -74,7 +75,7 @@ export class AddFormComponent implements OnInit {
       return;
     }
 
-    const userData = {
+    const userData: UserData  = {
       username: this.addUserForm.value.username,
       gender: this.addUserForm.value.gender,
       age: this.addUserForm.value.age,

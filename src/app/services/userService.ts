@@ -4,6 +4,7 @@ import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 import { Observable } from 'rxjs/Observable';
+import { QueryUserData, UserData } from '../common/types';
 
 @Injectable()
 export class UserService {
@@ -24,7 +25,7 @@ export class UserService {
       });
   }
 
-  postUser(userData: any): Observable<any> {
+  postUser(userData: UserData): Observable<any> {
     return this.http.post(this.USERS_URL, userData)
       .map((res: Response) => {
         console.log(`Received POST '/api/users' response: ${JSON.stringify(res.json())}`);
@@ -36,8 +37,8 @@ export class UserService {
       });
   }
 
-  queryUsers(queryData: any): Observable<any> {
-    return this.http.post(this.QUERY_USERS_URL, queryData)
+  queryUsers(queryUserData: QueryUserData): Observable<any> {
+    return this.http.post(this.QUERY_USERS_URL, queryUserData)
       .map((res: Response) => {
         console.log(`Received '/api/query' response: ${JSON.stringify(res.json())}`);
 
