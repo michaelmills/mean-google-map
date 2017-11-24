@@ -79,7 +79,7 @@ export class QueryFormComponent implements OnInit {
     this.userService.queryUsers(queryUserData).subscribe(users => {
       this.googleMapService.clearMap();
 
-      this.queryCount = users.size;
+      this.queryCount = users.length;
       for (const user of users) {
         this.googleMapService.pinSavedPosition(user, true);
       }
