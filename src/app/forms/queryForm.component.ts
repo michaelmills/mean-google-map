@@ -1,30 +1,29 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Http, Response } from '@angular/http';
 import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 import { Observable } from 'rxjs/Observable';
 import { GoogleMapService } from '../services/googleMapService';
+import { UserService } from '../services/userService';
 
 @Component({
   selector: 'app-form-root',
   templateUrl: './queryForm.component.html'
 })
 export class QueryFormComponent implements OnInit {
-  private queryUserForm: FormGroup;
-  private defaultLatitude: number;
-  private defaultLongitude: number;
+  queryUserForm: FormGroup;
+  queryCount: any;
 
-  constructor(private http: Http, private formBuilder: FormBuilder, private googleMapService: GoogleMapService) {
-    this.defaultLatitude = this.googleMapService.defaultLatitude;
-    this.defaultLongitude = this.googleMapService.defaultLongitude;
+  constructor(private formBuilder: FormBuilder,
+              private googleMapService: GoogleMapService, private userService: UserService) {
   }
 
   ngOnInit(): void {
     this.queryUserForm = this.formBuilder.group({
-      latitude: this.defaultLatitude,
-      longitude: this.defaultLongitude,
+      latitude: [this.googleMapService.defaultLatitude, [Validators.required]],
+      longitude: [this.googleMapService.defaultLongitude, [Validators.required]],
       distance: '',
       male: false,
       female: false,
@@ -56,6 +55,9 @@ export class QueryFormComponent implements OnInit {
     });
   }
 
+  /**
+   * Queries users based on criteria
+   */
   queryUsers() {
     const queryData = {
       longitude: parseFloat(this.queryUserForm.value.longitude),
@@ -73,24 +75,21 @@ export class QueryFormComponent implements OnInit {
     console.log(`Sending POST request to '/api/query': ${JSON.stringify(queryData)}`);
 
     // POST request to query for users
-    this.http.post('/api/query', queryData)
-      .map((res: Response) => {
-        console.log(`Received '/api/query' response: ${JSON.stringify(res.json())}`);
+    this.userService.queryUsers(queryData).subscribe(users => {
+      this.googleMapService.clearMap();
 
-        this.googleMapService.clearMap();
+      this.queryCount = users.size;
+      for (const user of users) {
+        this.googleMapService.pinSavedPosition(user, true);
+      }
 
-        for (const user of res.json()) {
-          this.googleMapService.pinSavedPosition(user, true);
-        }
-
-        this.reset();
-      })
-      .catch((e: any) => {
-        return Observable.throw(e || 'backend server error');
-      })
-      .subscribe();
+      this.reset();
+    });
   }
 
+  /**
+   * Resets the form's content
+   */
   private reset() {
     const currentLat = this.queryUserForm.value.latitude;
     const currentLng = this.queryUserForm.value.longitude;

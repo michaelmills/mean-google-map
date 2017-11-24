@@ -8,6 +8,7 @@ import { FormModule } from '../../forms/form.module';
 import { GoogleMapService } from '../../services/googleMapService';
 import { UserService } from '../../services/userService';
 import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
+import { AbstractControl } from '@angular/forms';
 
 class GoogleMapServiceStub {
   clearMap() {}
@@ -30,41 +31,50 @@ class GoogleMapServiceStub {
   }
 }
 
-class UserServiceStub {
-  getUsers(): Observable<any> {
-    return Observable.of('');
-  }
-
-  postUser(userData: any): Observable<any> {
-    return Observable.of('');
-  }
-}
-
 describe('AddFormComponent', () => {
   let comp: AddFormComponent;
   let fixture: ComponentFixture<AddFormComponent>;
   let de: DebugElement;
   let el: HTMLElement;
+
   let googleMapService: GoogleMapService;
   let userService: UserService;
+
+  let usernameControl: AbstractControl;
+  let genderControl: AbstractControl;
+  let ageControl: AbstractControl;
+  let favlangControl: AbstractControl;
+  let longitudeControl: AbstractControl;
+  let latitudeControl: AbstractControl;
+  let htmlverifiedControl: AbstractControl;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [ FormModule ],
       providers: [
         {provide: GoogleMapService, useClass: GoogleMapServiceStub},
-        {provide: UserService, useClass: UserServiceStub}
+        UserService
       ]
     }).compileComponents()
       .then(() => {
         fixture = TestBed.createComponent(AddFormComponent);
         comp = fixture.componentInstance; // AddFormComponent test instance
 
+        googleMapService = TestBed.get(GoogleMapService);
+        userService = fixture.debugElement.injector.get(UserService);
+
+        spyOn(userService, 'getUsers').and.returnValue(new EmptyObservable());
+
         comp.ngOnInit();
         fixture.detectChanges();
 
-        googleMapService = TestBed.get(GoogleMapService);
-        userService = fixture.debugElement.injector.get(UserService);
+        usernameControl = comp.addUserForm.controls['username'];
+        genderControl = comp.addUserForm.controls['gender'];
+        ageControl = comp.addUserForm.controls['age'];
+        favlangControl = comp.addUserForm.controls['favlang'];
+        longitudeControl = comp.addUserForm.controls['longitude'];
+        latitudeControl = comp.addUserForm.controls['latitude'];
+        htmlverifiedControl = comp.addUserForm.controls['htmlverified'];
       });
   }));
 
@@ -72,100 +82,101 @@ describe('AddFormComponent', () => {
     expect(fixture.componentInstance instanceof AddFormComponent).toBeTruthy();
   });
 
-  it('display header', fakeAsync(() => {
+  it('display header', () => {
       de = fixture.debugElement.query(By.css('h2'));
       el = de.nativeElement;
       expect(el.textContent).toContain('Join the Scotch Team!');
-  }));
+  });
 
   it('form invalid when empty', fakeAsync(() => {
     expect(comp.addUserForm.valid).toBeFalsy();
   }));
 
   it('username field validity', () => {
-    const username = comp.addUserForm.controls['username'];
-    expect(username.valid).toBeFalsy();
+    expect(usernameControl.valid).toBeFalsy();
 
     // username field is required
-    let errors = username.errors || {};
+    let errors = usernameControl.errors || {};
     expect(errors['required']).toBeTruthy();
 
     // set username
-    username.setValue('test_username');
-    errors = username.errors || {};
+    usernameControl.setValue('test_username');
+    errors = usernameControl.errors || {};
     expect(errors['required']).toBeFalsy();
   });
 
   it('gender field validity', () => {
-    const gender = comp.addUserForm.controls['gender'];
-    expect(gender.valid).toBeFalsy();
+    expect(genderControl.valid).toBeFalsy();
 
     // gender field is required
-    let errors = gender.errors || {};
+    let errors = genderControl.errors || {};
     expect(errors['required']).toBeTruthy();
 
     // set gender
-    gender.setValue('test_gender');
-    errors = gender.errors || {};
+    genderControl.setValue('test_gender');
+    errors = genderControl.errors || {};
     expect(errors['required']).toBeFalsy();
   });
 
   it('age field validity', () => {
-    const age = comp.addUserForm.controls['age'];
-    expect(age.valid).toBeFalsy();
+    expect(ageControl.valid).toBeFalsy();
 
     // age field is required
-    let errors = age.errors || {};
+    let errors = ageControl.errors || {};
     expect(errors['required']).toBeTruthy();
 
     // set age
-    age.setValue(55);
-    errors = age.errors || {};
+    ageControl.setValue(55);
+    errors = ageControl.errors || {};
     expect(errors['required']).toBeFalsy();
   });
 
   it('favlang field validity', () => {
-    const favlang = comp.addUserForm.controls['favlang'];
-    expect(favlang.valid).toBeFalsy();
+    expect(favlangControl.valid).toBeFalsy();
 
     // favlang field is required
-    let errors = favlang.errors || {};
+    let errors = favlangControl.errors || {};
     expect(errors['required']).toBeTruthy();
 
     // set favlang
-    favlang.setValue('favlang');
-    errors = favlang.errors || {};
+    favlangControl.setValue('favlang');
+    errors = favlangControl.errors || {};
     expect(errors['required']).toBeFalsy();
   });
 
   it('longitude field validity', () => {
-    const longitude = comp.addUserForm.controls['longitude'];
-    expect(longitude.valid).toBeTruthy();
+    expect(longitudeControl.valid).toBeTruthy();
 
     // longitude field set in constructor
-    const errors = longitude.errors || {};
+    const errors = longitudeControl.errors || {};
     expect(errors['required']).toBeFalsy();
   });
 
   it('latitude field validity', () => {
-    const latitude = comp.addUserForm.controls['latitude'];
-    expect(latitude.valid).toBeTruthy();
+    expect(latitudeControl.valid).toBeTruthy();
 
     // latitude field set in constructor
-    const errors = latitude.errors || {};
+    const errors = latitudeControl.errors || {};
     expect(errors['required']).toBeFalsy();
   });
 
-  it('save user throws error on invalid form', () => {
+  it('htmlverified field validity', () => {
+    expect(htmlverifiedControl.valid).toBeTruthy();
+
+    // latitude field set in constructor
+    const errors = htmlverifiedControl.errors || {};
+    expect(errors['required']).toBeFalsy();
+  });
+
+  it('submit form saves user and resets form', () => {
     spyOn(userService, 'postUser').and.returnValue(Observable.of(''));
-    spyOn(userService, 'getUsers').and.returnValue(new EmptyObservable());
 
     expect(comp.addUserForm.valid).toBeFalsy();
 
-    comp.addUserForm.controls['username'].setValue('test_username');
-    comp.addUserForm.controls['gender'].setValue('test_gender');
-    comp.addUserForm.controls['age'].setValue(55);
-    comp.addUserForm.controls['favlang'].setValue('test_favlang');
+    usernameControl.setValue('test_username');
+    genderControl.setValue('test_gender');
+    ageControl.setValue(55);
+    favlangControl.setValue('test_favlang');
 
     expect(comp.addUserForm.valid).toBeTruthy();
 
@@ -173,13 +184,14 @@ describe('AddFormComponent', () => {
 
     // form is reset
     expect(userService.postUser).toHaveBeenCalled();
-    expect(comp.addUserForm.controls['username'].valid).toBeFalsy();
-    expect(comp.addUserForm.controls['gender'].valid).toBeFalsy();
-    expect(comp.addUserForm.controls['age'].valid).toBeFalsy();
-    expect(comp.addUserForm.controls['favlang'].valid).toBeFalsy();
-    expect(comp.addUserForm.controls['latitude'].value).toEqual(0);
-    expect(comp.addUserForm.controls['longitude'].value).toEqual(0);
-    expect(comp.addUserForm.controls['htmlverified'].value).toEqual('Nope (Thanks for spamming my map...)');
+    expect(usernameControl.valid).toBeFalsy();
+    expect(genderControl.valid).toBeFalsy();
+    expect(ageControl.valid).toBeFalsy();
+    expect(favlangControl.valid).toBeFalsy();
+    expect(latitudeControl.value).toEqual(0);
+    expect(longitudeControl.value).toEqual(0);
+    expect(htmlverifiedControl.value).toEqual('Nope (Thanks for spamming my map...)');
     expect(comp.addUserForm.valid).toBeFalsy();
   });
 });
+
