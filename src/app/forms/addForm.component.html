@@ -9,24 +9,24 @@
     <form [formGroup]="addUserForm" name="addForm" (ngSubmit)="saveUser()" novalidate>
       <!-- Text Boxes and Other User Inputs. Note ng-model binds the values to Angular $scope -->
       <div class="form-group">
-        <label for="username">Username <span class="badge">All fields required</span></label>
+        <label for="username">Username <span class="badge badge-info">All fields required</span></label>
         <input type="text" class="form-control" formControlName="username" id="username" placeholder="OldandGold" required>
       </div>
-      <label class="radio control-label">Gender</label>
+      <label class="radio control-label" id="gender">Gender</label>
       <div class="radio">
-        <label>
+        <label id="male">
           <input type="radio" id="radiomale" value="Male" formControlName="gender">
           Male
         </label>
       </div>
       <div class="radio" required>
-        <label>
+        <label id="female">
           <input type="radio" id="radiofemale" value="Female" formControlName="gender">
           Female
         </label>
       </div>
       <div class="radio">
-        <label>
+        <label id="other">
           <input type="radio" id="radioother" value="What's it to ya?" formControlName="gender">
           What's it to ya?
         </label>
