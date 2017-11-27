@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
+import { UserData } from '../common/types';
 
 declare let google: any;
 
@@ -108,7 +109,7 @@ export class GoogleMapService {
    * @param user
    * @param filtered
    */
-  pinSavedPosition(user: any, filtered?: boolean) {
+  pinSavedPosition(user: UserData, filtered?: boolean) {
     const icon = filtered ?
       'http://maps.google.com/mapfiles/ms/icons/yellow-dot.png' : 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png';
 

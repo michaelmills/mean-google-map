@@ -1,15 +1,14 @@
 import { DebugElement } from '@angular/core';
-import { async, ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { AbstractControl } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import 'rxjs/add/observable/of';
 import { Observable } from 'rxjs/Observable';
-import { AddFormComponent } from '../../forms/addForm.component';
+import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
 import { FormModule } from '../../forms/form.module';
+import { QueryFormComponent } from '../../forms/queryForm.component';
 import { GoogleMapService } from '../../services/googleMapService';
 import { UserService } from '../../services/userService';
-import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
-import { AbstractControl } from '@angular/forms';
-import { QueryFormComponent } from '../../forms/queryForm.component';
 
 class GoogleMapServiceStub {
   clearMap() {}
@@ -39,7 +38,6 @@ describe('QueryFormComponent', () => {
   let comp: QueryFormComponent;
   let fixture: ComponentFixture<QueryFormComponent>;
   let de: DebugElement;
-  let el: HTMLElement;
 
   let googleMapService: GoogleMapService;
   let userService: UserService;
@@ -65,10 +63,11 @@ describe('QueryFormComponent', () => {
     }).compileComponents()
       .then(() => {
         fixture = TestBed.createComponent(QueryFormComponent);
+        de = fixture.debugElement;
         comp = fixture.componentInstance;
 
         googleMapService = TestBed.get(GoogleMapService);
-        userService = fixture.debugElement.injector.get(UserService);
+        userService = TestBed.get(UserService);
 
         comp.ngOnInit();
         fixture.detectChanges();
@@ -86,14 +85,50 @@ describe('QueryFormComponent', () => {
       });
   }));
 
-  it('create QueryFormComponent', () => {
+  it('initial query form', () => {
     expect(fixture.componentInstance instanceof QueryFormComponent).toBeTruthy();
-  });
 
-  it('display header', () => {
-      de = fixture.debugElement.query(By.css('h2'));
-      el = de.nativeElement;
-      expect(el.textContent).toContain('Find Teammates! (Map Query)');
+    let element: DebugElement = de.query(By.css('.panel-heading h2'));
+    expect(element.nativeElement.textContent).toBe('Find Teammates! (Map Query)');
+
+    element = de.query(By.css('form label[for=latitude]'));
+    expect(element.nativeElement.textContent).toBe('Your Latitude');
+
+    element = de.query(By.css('form label[for=longitude]'));
+    expect(element.nativeElement.textContent).toBe('Your Longitude');
+
+    element = de.query(By.css('form label[for=distance]'));
+    expect(element.nativeElement.textContent).toBe('Max. Distance (miles)');
+
+    element = de.query(By.css('form label#gender'));
+    expect(element.nativeElement.textContent).toBe('Gender');
+
+    element = de.query(By.css('form label#male'));
+    expect(element.nativeElement.textContent.trim()).toBe('Male');
+
+    element = de.query(By.css('form label#female'));
+    expect(element.nativeElement.textContent.trim()).toBe('Female');
+
+    element = de.query(By.css('form label#other'));
+    expect(element.nativeElement.textContent.trim()).toBe('What\'s it to ya?');
+
+    element = de.query(By.css('form label[for=minage]'));
+    expect(element.nativeElement.textContent).toBe('Min. Age');
+
+    element = de.query(By.css('form label[for=maxage]'));
+    expect(element.nativeElement.textContent).toBe('Max Age');
+
+    element = de.query(By.css('form label[for=favlang]'));
+    expect(element.nativeElement.textContent).toBe('Favorite Language');
+
+    element = de.query(By.css('form label#reqVerified'));
+    expect(element.nativeElement.textContent.trim()).toBe('Include Only HTML5 Verified Locations?');
+
+    element = de.query(By.css('form button'));
+    expect(element.nativeElement.textContent).toBe('Search');
+
+    element = de.query(By.css('#queryCount'));
+    expect(element).toBeNull();
   });
 
   it('form valid when empty', () => {
@@ -181,13 +216,30 @@ describe('QueryFormComponent', () => {
   });
 
   it('submit form saves user and resets form', () => {
-    spyOn(userService, 'queryUsers').and.returnValue(Observable.of(''));
-    expect(comp.queryUserForm.valid).toBeTruthy();
+    const users = ['user1', 'user2'];
+    spyOn(userService, 'queryUsers').and.returnValue(Observable.of(users));
+    spyOn(comp, 'queryUsers').and.callThrough();
 
-    comp.queryUsers();
+    // check initial form
+    let queryCountElement: DebugElement = de.query(By.css('#queryCount'));
+    expect(comp.queryUserForm.valid).toBeTruthy();
+    expect(queryCountElement).toBeNull();
+
+    // call form submit and detect changes
+    de.query(By.css('form')).triggerEventHandler('ngSubmit', null);
+    fixture.detectChanges();
+
+    // assert method calls
+    expect(comp.queryUsers).toHaveBeenCalled();
+    expect(userService.queryUsers).toHaveBeenCalled();
+
+    // check form
+    queryCountElement = de.query(By.css('#queryCount'));
+    expect(queryCountElement).not.toBeNull();
+    expect(queryCountElement.nativeElement.textContent).toBe('Hot Dang! We Found 2 Teammates');
 
     // form is reset
-    expect(userService.queryUsers).toHaveBeenCalled();
+    expect(comp.queryCount).toBe(users.length);
     expect(distanceControl.value).toBeNull();
     expect(maleControl.value).toBeFalsy();
     expect(femaleControl.value).toBeFalsy();
@@ -200,5 +252,6 @@ describe('QueryFormComponent', () => {
     expect(reqVerifiedControl.value).toBeFalsy();
     expect(comp.queryUserForm.valid).toBeTruthy();
   });
+
 });
 
