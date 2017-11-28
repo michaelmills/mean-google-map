@@ -73,16 +73,12 @@ export class QueryFormComponent implements OnInit {
       reqVerified: this.queryUserForm.value.reqVerified
     };
 
-    console.log(`Sending POST request to '/api/query': ${JSON.stringify(queryUserData)}`);
-
     // POST request to query for users
     this.userService.queryUsers(queryUserData).subscribe(users => {
       this.googleMapService.clearMap();
 
       this.queryCount = users.length;
-      for (const user of users) {
-        this.googleMapService.pinSavedPosition(user, true);
-      }
+      this.googleMapService.pinSavedPositions(users, true);
 
       this.reset();
     });

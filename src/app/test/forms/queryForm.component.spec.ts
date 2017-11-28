@@ -9,11 +9,12 @@ import { FormModule } from '../../forms/form.module';
 import { QueryFormComponent } from '../../forms/queryForm.component';
 import { GoogleMapService } from '../../services/googleMapService';
 import { UserService } from '../../services/userService';
+import { UserData } from '../../common/types';
 
 class GoogleMapServiceStub {
   clearMap() {}
   pinCurrentPosition() {}
-  pinSavedPosition(user: any, filter: boolean) {
+  pinSavedPositions(users: Array<UserData>, filtered?: boolean) {
     return new EmptyObservable();
   }
 

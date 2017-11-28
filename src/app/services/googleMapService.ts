@@ -101,36 +101,43 @@ export class GoogleMapService {
       this.lastMarker = marker;
     }
 
-    console.log(`Pinned selected position[lat, lng]: [${latitude}, ${longitude}]`);
+    console.log(`Pinned selected position[lat, lng]:`, [latitude, longitude]);
   }
 
   /**
    * Places a google map pin on the coordinates of saved users
-   * @param user
+   * @param users
    * @param filtered
    */
-  pinSavedPosition(user: UserData, filtered?: boolean) {
+  pinSavedPositions(users: Array<UserData>, filtered?: boolean) {
     const icon = filtered ?
       'http://maps.google.com/mapfiles/ms/icons/yellow-dot.png' : 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png';
 
-    const contentString =
-      '<p><b>Username</b>: ' + user.username +
-      '<br><b>Age</b>: ' + user.age +
-      '<br><b>Gender</b>: ' + user.gender +
-      '<br><b>Favorite Language</b>: ' + user.favlang +
-      '</p>';
+    for (const user of users) {
+      const contentString =
+        '<p><b>Username</b>: ' + user.username +
+        '<br><b>Age</b>: ' + user.age +
+        '<br><b>Gender</b>: ' + user.gender +
+        '<br><b>Favorite Language</b>: ' + user.favlang +
+        '</p>';
 
-    const marker = new google.maps.Marker({
-      position: new google.maps.LatLng(user.location[1], user.location[0]),
-      title: 'Big Map',
-      map: this.map,
-      icon: icon
-    });
+      const marker = new google.maps.Marker({
+        position: new google.maps.LatLng(user.location[1], user.location[0]),
+        title: 'Big Map',
+        map: this.map,
+        icon: icon
+      });
 
-    this.addPinListener(marker, contentString);
-    this.markers.push(marker);
+      this.addPinListener(marker, contentString);
+      this.markers.push(marker);
+    }
 
-    console.log(`Pinned position[lat, lng]: [${marker.position.lat()}, ${marker.position.lng()}]`);
+    console.log(`Pinned positions[lat, lng]`,
+      Array.apply(null, this.markers)
+        .map((el, index) => {
+          return [el.position.lat(), el.position.lng()];
+        })
+    );
   }
 
   /**
@@ -145,7 +152,7 @@ export class GoogleMapService {
   }
 
   /**
-   * Click listener for google map pin containing pin deatils
+   * Click listener for google map pin containing pin details
    * @param marker
    * @param {string} contentString
    */

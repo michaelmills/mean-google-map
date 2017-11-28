@@ -42,9 +42,7 @@ export class AddFormComponent implements OnInit {
 
     // query for users
     this.userService.getUsers().subscribe(users => {
-      for (const user of users) {
-        this.googleMapService.pinSavedPosition(user, false);
-      }
+      this.googleMapService.pinSavedPositions(users, false);
     });
 
     // subscribing to Observable for clicked coordinates
@@ -83,8 +81,6 @@ export class AddFormComponent implements OnInit {
       location: [this.addUserForm.value.longitude, this.addUserForm.value.latitude],
       htmlverified: this.addUserForm.value.htmlverified
     };
-
-    console.log(`Sending POST request to '/api/users': ${JSON.stringify(userData)}`);
 
     // POST request to save user and reset the form's content
     this.userService.postUser(userData).subscribe(response => {
