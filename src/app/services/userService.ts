@@ -1,5 +1,5 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Http, Response } from '@angular/http';
 import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
@@ -8,44 +8,20 @@ import { QueryUserData, UserData } from '../common/types';
 
 @Injectable()
 export class UserService {
-  private USERS_URL = '/api/users';
-  private QUERY_USERS_URL = '/api/query';
+  private readonly USERS_URL = '/api/users';
+  private readonly QUERY_USERS_URL = '/api/query';
 
-  constructor(private http: Http) {}
+  constructor(private http: HttpClient) {}
 
-  getUsers(): Observable<any> {
-    return this.http.get(this.USERS_URL)
-      .map((res: Response) => {
-        console.log(`Received GET '/api/users' response: ${JSON.stringify(res.json())}`);
-
-        return res.json();
-      })
-      .catch((e: any) => {
-        return Observable.throw(e || 'backend server error');
-      });
+  getUsers(): Observable<Array<UserData>> {
+    return this.http.get<Array<UserData>>(this.USERS_URL);
   }
 
-  postUser(userData: UserData): Observable<any> {
-    return this.http.post(this.USERS_URL, userData)
-      .map((res: Response) => {
-        console.log(`Received POST '/api/users' response: ${JSON.stringify(res.json())}`);
-
-        return res.json();
-      })
-      .catch((e: any) => {
-        return Observable.throw(e || 'backend server error');
-      });
+  postUser(userData: UserData): Observable<UserData> {
+    return this.http.post<UserData>(this.USERS_URL, userData);
   }
 
-  queryUsers(queryUserData: QueryUserData): Observable<any> {
-    return this.http.post(this.QUERY_USERS_URL, queryUserData)
-      .map((res: Response) => {
-        console.log(`Received '/api/query' response: ${JSON.stringify(res.json())}`);
-
-        return res.json();
-      })
-      .catch((e: any) => {
-        return Observable.throw(e || 'backend server error');
-      });
+  queryUsers(queryUserData: QueryUserData): Observable<Array<UserData>> {
+    return this.http.post<Array<UserData>>(this.QUERY_USERS_URL, queryUserData);
   }
 }
