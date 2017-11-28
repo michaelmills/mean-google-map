@@ -133,7 +133,7 @@ export class GoogleMapService {
     }
 
     console.log(`Pinned positions[lat, lng]`,
-      Array.apply(null, this.markers)
+      Array.apply(this, this.markers)
         .map((el, index) => {
           return [el.position.lat(), el.position.lng()];
         })
